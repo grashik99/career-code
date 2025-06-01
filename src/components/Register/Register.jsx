@@ -1,10 +1,11 @@
 import { use, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../Authentication/AuthContext";
 
 const Register = () => {
-  const { createUserWithEmail } = use(AuthContext);
+  const { createUserWithEmail, updateName } = use(AuthContext);
+  const navigate = useNavigate();
 
   const [showPass, setShowPass] = useState(false);
 
@@ -15,21 +16,28 @@ const Register = () => {
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(name, photo, email, password);
     createUserWithEmail(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        if(user.uid){
-            console.log(user.uid)
-            form.reset()
+        if (user.uid) {
+          updateName({ displayName: name, photoURL: photo })
+            .then(() => {
+              // Profile updated!
+              // ...
+              form.reset();
+              navigate("/");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         }
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-      });
-  };
+    });
+};
 
   const showPassword = () => {
     setShowPass(!showPass);
