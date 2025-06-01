@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link } from "react-router";
+import { AuthContext } from "../../Authentication/AuthContext";
 
 const Register = () => {
+  const { createUserWithEmail } = use(AuthContext);
+
   const [showPass, setShowPass] = useState(false);
+
   const handleSignUp = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -12,6 +16,19 @@ const Register = () => {
     const email = form.email.value;
     const password = form.password.value;
     console.log(name, photo, email, password);
+    createUserWithEmail(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if(user.uid){
+            console.log(user.uid)
+            form.reset()
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
   };
 
   const showPassword = () => {

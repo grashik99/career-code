@@ -2,8 +2,20 @@ import { Link } from "react-router";
 import Links from "./Links";
 import logo from "../../assets/fav.png";
 import { Typewriter } from "react-simple-typewriter";
+import { use } from "react";
+import { AuthContext } from "../../Authentication/AuthContext";
 
 const Navbar = () => {
+  const { user, loading, Logout } = use(AuthContext);
+  const logoutUser = () => {
+    Logout()
+      .then(() => {
+        console.log("Sign-out successful.");
+      })
+      .catch((error) => {
+        console.log(`An error happened.${error}`);
+      });
+  };
   return (
     <div className="navbar bg-base-100/80 shadow-lg rounded-xl">
       <div className="navbar-start">
@@ -34,17 +46,19 @@ const Navbar = () => {
         </div>
 
         <Link to="/" className="btn btn-ghost text-xl">
-          <img src={logo} alt="logo" className="w-8" />Job
+          <img src={logo} alt="logo" className="w-8" />
+          Job
           <span className="text-blue-500">
-          <Typewriter
-            className
-            words={["HUNT", "POST"]}
-            loop={0}
-            cursor={"|"}
-            typeSpeed={100}
-            deleteSpeed={100}
-            delaySpeed={2000}
-          /></span>
+            <Typewriter
+              className
+              words={["HUNT", "POST"]}
+              loop={0}
+              cursor={"|"}
+              typeSpeed={100}
+              deleteSpeed={100}
+              delaySpeed={2000}
+            />
+          </span>
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
@@ -53,12 +67,26 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end space-x-1">
-        <Link className="btn" to="/login">
-          Login
-        </Link>
-        <Link className="btn hidden md:flex" to="/register">
-          Register
-        </Link>
+        {user ? (
+          <button className="btn" onClick={logoutUser}>
+            Logout
+          </button>
+        ) : (
+          <>
+            {loading ? (
+              <span className="loading loading-spinner loading-xl"></span>
+            ) : (
+              <>
+                <Link className="btn" to="/login">
+                  Login
+                </Link>
+                <Link className="btn hidden md:flex" to="/register">
+                  Register
+                </Link>
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
