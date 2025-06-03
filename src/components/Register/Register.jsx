@@ -2,6 +2,7 @@ import { use, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../Authentication/AuthContext";
+import axios from "axios";
 
 const Register = () => {
   const { createUserWithEmail, updateName } = use(AuthContext);
@@ -16,28 +17,43 @@ const Register = () => {
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
+    const account_type = form.accountType.value;
+    const userInfo = {
+      name,
+      photo,
+      email,
+      account_type,
+    };
     createUserWithEmail(email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         if (user.uid) {
           updateName({ displayName: name, photoURL: photo })
             .then(() => {
+              axios
+                .post("http://localhost:3000/users", userInfo)
+                .then(function (response) {
+                  console.log(response);
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
               // Profile updated!
               // ...
               form.reset();
               navigate("/");
             })
             .catch((error) => {
-                console.log(error);
+              console.log(error);
             });
         }
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-    });
-};
+      });
+  };
 
   const showPassword = () => {
     setShowPass(!showPass);
@@ -56,6 +72,13 @@ const Register = () => {
               name="name"
               required
             />
+
+            <label className="label">User Type</label>
+            <select className="select" required name="accountType">
+              <option disabled={true}>Select Account type</option>
+              <option>Employer</option>
+              <option>Job Seeker</option>
+            </select>
 
             <label className="label">Photo URL</label>
             <input

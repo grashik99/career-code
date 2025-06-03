@@ -9,7 +9,7 @@ const Banner = () => {
     <div className="hero my-1 md:my-4 bg-base-200/30 rounded-2xl md:py-30 overflow-hidden">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="flex-1">
-          <div className="hidden md:flex relative">
+          <div className="hidden lg:flex relative">
             <motion.div
               className="max-w-92 rounded-t-4xl rounded-br-4xl border-l-4 border-b-4 border-blue-500 md:absolute"
               animate={{
@@ -46,7 +46,7 @@ const Banner = () => {
               />
             </motion.div>
           </div>
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <motion.div
               style={{
                 border: "4px solid transparent",
